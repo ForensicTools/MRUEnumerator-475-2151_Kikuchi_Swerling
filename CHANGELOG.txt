@@ -6,3 +6,6 @@ README.md created.
 
 ## [0.0.0] - 10/29/2015
 README.txt updated.
+
+## [0.0.0] - 11/1/2015
+Added basic RR files and LINUXHOWTO.txt.
