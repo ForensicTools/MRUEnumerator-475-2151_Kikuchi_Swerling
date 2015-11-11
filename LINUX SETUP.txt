@@ -1,4 +1,4 @@
-##LINUX HOW TO##
+##LINUX SETUP##
 
 The following steps will give RR the ability to run on Liunx.
 
@@ -8,11 +8,14 @@ perl -MCPAN -e 'install Parse::Win32Registry'
 ##Unzip RR
 unzip RegRipper2.8-master.zip
 
+##Move to new RR directory
+cd RegRipper2.8-master
+
 ##Convert to Unix line endings
 perl -pi -e 's/\r\n/\n/g' rip.pl
 
 ##Make the rip.pl script executable
-perl -pi -e 's/\r\n/\n/g' rip.pl
+chmod +x rip.pl
 
 ##Set your system Perl interpreter to run rip.pl
 which perl | sed 's/\//\\\//g' > /tmp/perlloc && sed -i "s/ c:\\\\perl\\\\bin\\\\perl.exe/`cat /tmp/perlloc`/" rip.pl
