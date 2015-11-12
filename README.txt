@@ -14,8 +14,8 @@ and visualize them using D3.js for easier consumption.
 Prerequisites:
 	Perl
 	Web browser
-	D3.js library (included)
-	Windows target image mounted
+	Windows registry files
+	D3.min.js library (included)
 	
 License:
 	GPLv2
