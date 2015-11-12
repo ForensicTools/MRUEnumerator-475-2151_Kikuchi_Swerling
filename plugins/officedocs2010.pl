@@ -53,7 +53,7 @@ my $VERSION = getVersion();
 sub pluginmain {
 	my $class = shift;
 	my $ntuser = shift;
-	::logMsg("Launching officedocs2010 v.".$VERSION);
+	#::logMsg("Launching officedocs2010 v.".$VERSION);
     ::rptMsg("officedocs2010 v.".$VERSION); # banner
     ::rptMsg("(".getHive().") ".getShortDescr()."\n"); # banner
 
