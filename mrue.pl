@@ -68,11 +68,11 @@ my $section = 0;
 
 #sort data
 foreach ( @array ){
-	#if the line is the beginning of a new section, increment $newsect
+	#if the line is the beginning of a new section, increment $section
 	if ( $_ =~ m/^Software./ ){
 		$section++;
 
-	#else add value to corrseponding array based on $newsect
+	#else add value to corrseponding array based on $section
 	} else {
 		if ( $section == 1 ){
 			if ( $_ =~ m/^  Item./ ){
@@ -97,65 +97,279 @@ foreach ( @array ){
 	}
 }
 
-#remove "Item X -> " from the beginning of each element from all arrays
-#replace all "\" with "/"
-#remove trailing day, date, time, and year
-#grab the filename from the full path
-foreach ( @word ){
-	$_ =~ s/^[^>]*> //;
-	$_ =~ s/\\/\//g;
-	$_ = substr( $_, 0, -26 );
-	$_ = fileparse( $_ );
+#find the size of all arrays
+my $wordsize = scalar( @word );
+my $excelsize = scalar( @excel );
+my $accesssize = scalar( @access );
+my $powerpointsize = scalar( @powerpoint );
+
+#calculate process & print flag
+my $ppflag = $wordsize . $excelsize . $accesssize . $powerpointsize;
+
+#if larger than 0000, call office2010pp sub
+if ( $ppflag > 0 )
+{
+	&office2010pp;
+}
+else
+{
+	print "No Office 2010 data found.\n";
 }
 
-foreach ( @excel ){
-	$_ =~ s/^[^>]*> //;
+##################
+#officedocs2010pp#
+##################
+
+sub office2010pp
+{
+	#remove "Item X -> " from the beginning of each element from all arrays
+	#replace all "\" with "/"
+	#remove trailing day, date, time, and year
+	#grab the filename from the full path and throw away everything else
+	#number all elements
+	#increment counter
+	#reset counter after each loop
+	my $counter = 1;
+	foreach ( @word ){
+		$_ =~ s/^[^>]*> //;
+		$_ =~ s/\\/\//g;
+		$_ = substr( $_, 0, -26 );
+		$_ = fileparse( $_ );
+		$_ = "$counter $_";
+		$counter++; 
+	}
+	$counter = 1;
+	foreach ( @excel ){
+		$_ =~ s/^[^>]*> //;
+		$_ =~ s/\\/\//g;
+		$_ = substr( $_, 0, -26 );
+		$_ = fileparse( $_ );
+		$_ = "$counter $_";
+		$counter++; 
+	}
+	$counter = 1;
+	foreach ( @access ){
+		$_ =~ s/^[^>]*> //;
+		$_ =~ s/\\/\//g;
+		$_ = substr( $_, 0, -26 );
+		$_ = fileparse( $_ );
+		$_ = "$counter $_";
+		$counter++; 
+	}
+	$counter = 1;
+	foreach ( @powerpoint ){
+		$_ =~ s/^[^>]*> //;
+		$_ =~ s/\\/\//g;
+		$_ = substr( $_, 0, -26 );
+		$_ = fileparse( $_ );
+		$_ = "$counter $_";
+		$counter++; 
+	}
+
+	#open file handle in order to make output json
+	open( $fh, ">", "./RESULTS/data.json" )
+		or die "Fatal Error - Cannot create output json.\n";
+
+	#print data to json
+	print $fh "{\n";
+	print $fh " \"name\": \"Main\",\n";
+	print $fh " \"children\": [\n";
+	print $fh "  {\n";
+	print $fh "   \"name\": \"MS Office\",\n";
+	print $fh "   \"children\": [\n";
+	print $fh "    {\n";
+
+	#WORD section
+	print $fh "     \"name\": \"Word\",\n";
+	print $fh "     \"children\": [\n";
+
+	#get size of word array
+	my $arraysize = scalar( @word);
+
+	#just print nothing
+	if( $arraysize == 0 ){
+		print $fh "       {}\n";
+	}
+
+	#print the only element
+	elsif ( $arraysize == 1 ){
+		#print the last element
+		my $lastelement = pop @word;
+		print $fh "      {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	}
+	#print element 0 & 1
+	elsif ( $arraysize == 2 ){
+		$arraysize = 1;
+
+		#print all but the last element
+		foreach my $x ( 0..$arraysize ){
+			print $fh "      {\"name\": \"$word[ $x ]\", \"size\": 5000},\n";
+		}
+	}
+	#all other array sizes (2+)
+	else {
+		#subtract one to account for index 0, another to omit the last element
+		$arraysize = $arraysize - 2;
+
+		#print all but the last element
+		foreach my $x ( 0..$arraysize ){
+			print $fh "      {\"name\": \"$word[ $x ]\", \"size\": 5000},\n";
+		}
+
+		#print the last element
+		my $lastelement = pop @word;
+		print $fh "      {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	}
+
+	#print closing child bracket and new parent brackets
+	print $fh "     ]\n";
+	print $fh "    },\n";
+	print $fh "    {\n";
+
+	#EXCEL section
+	print $fh "     \"name\": \"Excel\",\n";
+	print $fh "     \"children\": [\n";
+
+	#get size of word array
+	$arraysize = scalar( @excel);
+
+	#just print nothing
+	if( $arraysize == 0 ){
+		print $fh "       {}\n";
+	}
+
+	#print the only element
+	elsif ( $arraysize == 1 ){
+		#print the last element
+		my $lastelement = pop @excel;
+		print $fh "      {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	}
+	#print element 0 & 1
+	elsif ( $arraysize == 2 ){
+		$arraysize = 1;
+
+		#print all but the last element
+		foreach my $x ( 0..$arraysize ){
+			print $fh "      {\"name\": \"$powerpoint[ $x ]\", \"size\": 5000},\n";
+		}
+	}
+	#all other array sizes (2+)
+	else {
+		#subtract one to account for index 0, another to omit the last element
+		$arraysize = $arraysize - 2;
+
+		#print all but the last element
+		foreach my $x ( 0..$arraysize ){
+			print $fh "      {\"name\": \"$excel[ $x ]\", \"size\": 5000},\n";
+		}
+
+		#print the last element
+		my $lastelement = pop @excel;
+		print $fh "      {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	}
+
+	#print closing child bracket and new parent brackets
+	print $fh "     ]\n";
+	print $fh "    },\n";
+	print $fh "    {\n";
+
+	#ACCESS section
+	print $fh "     \"name\": \"Access\",\n";
+	print $fh "     \"children\": [\n";
+
+	#get size of word array
+	$arraysize = scalar( @access);
+
+	#just print nothing
+	if( $arraysize == 0 ){
+		print $fh "       {}\n";
+	}
+
+	#print the only element
+	elsif ( $arraysize == 1 ){
+		#print the last element
+		my $lastelement = pop @access;
+		print $fh "      {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	}
+	#print element 0 & 1
+	elsif ( $arraysize == 2 ){
+		$arraysize = 1;
+
+		#print all but the last element
+		foreach my $x ( 0..$arraysize ){
+			print $fh "      {\"name\": \"$access[ $x ]\", \"size\": 5000},\n";
+		}
+	}
+	#all other array sizes (2+)
+	else {
+		#subtract one to account for index 0, another to omit the last element
+		$arraysize = $arraysize - 2;
+
+		#print all but the last element
+		foreach my $x ( 0..$arraysize ){
+			print $fh "      {\"name\": \"$access[ $x ]\", \"size\": 5000},\n";
+		}
+
+		#print the last element
+		my $lastelement = pop @access;
+		print $fh "      {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	}
+
+	#print closing child bracket and new parent brackets
+	print $fh "     ]\n";
+	print $fh "    },\n";
+	print $fh "    {\n";
+
+	#POWERPOINT section
+	print $fh "     \"name\": \"Powerpoint\",\n";
+	print $fh "     \"children\": [\n";
+
+	#get size of word array
+	$arraysize = scalar( @powerpoint);
+
+	#just print nothing
+	if( $arraysize == 0 ){
+		print $fh "       {}\n";
+	}
+
+	#print the only element
+	elsif ( $arraysize == 1 ){
+		#print the last element
+		my $lastelement = pop @powerpoint;
+		print $fh "      {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	}
+	#print element 0 & 1
+	elsif ( $arraysize == 2 ){
+		$arraysize = 1;
+
+		#print all but the last element
+		foreach my $x ( 0..$arraysize ){
+			print $fh "      {\"name\": \"$powerpoint[ $x ]\", \"size\": 5000},\n";
+		}
+	}
+	#all other array sizes (2+)
+	else {
+		#subtract one to account for index 0, another to omit the last element
+		$arraysize = $arraysize - 2;
+
+		#print all but the last element
+		foreach my $x ( 0..$arraysize ){
+			print $fh "      {\"name\": \"$powerpoint[ $x ]\", \"size\": 5000},\n";
+		}
+
+		#print the last element
+		my $lastelement = pop @powerpoint;
+		print $fh "      {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	}
+
+	#print closing braces
+	print $fh "     ]\n";
+	print $fh "    }\n";
+	print $fh "   ]\n";
+	print $fh "  }\n";
+	print $fh " ]\n";
+	print $fh "}\n";
 }
-
-foreach ( @access ){
-	$_ =~ s/^[^>]*> //;
-}
-
-foreach ( @powerpoint ){
-	$_ =~ s/^[^>]*> //;
-}
-
-#open file handle in order to make output json
-open( $fh, ">", "./RESULTS/results.json" )
-	or die "Fatal Error - Cannot create output json.\n";
-
-#print data to json
-print $fh "{\n";
-print $fh " \"name\": \"Main\",\n";
-print $fh " \"children\": [\n";
-print $fh "  {\n";
-print $fh "   \"name\": \"MS Office\",\n";
-print $fh "   \"children\": [\n";
-print $fh "    {\n";
-print $fh "     \"name\": \"Word\",\n";
-print $fh "     \"children\": [\n";
-
-#get size of array
-my $arraysize = scalar( @word);
-
-#subtract one to account for index 0, another to omit the last element
-$arraysize = $arraysize - 2;
-
-#print all but the last element
-foreach my $x ( 0..$arraysize ){
-	print $fh "      {\"name\": \"@word[ $x ]\", \"size\": 5000},\n";
-}
-
-#print the last element
-my $lastelement = pop @word;
-print $fh "      {\"name\": \"$lastelement\", \"size\": 5000}\n";
-
-print $fh "     ]\n";
-print $fh "    }\n";
-print $fh "   ]\n";
-print $fh "  }\n";
-print $fh " ]\n";
-print $fh "}\n";
 
 
 
