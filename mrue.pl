@@ -199,6 +199,9 @@ if( $arraysize == 0 ){
 print $fh "   ]\n";
 print $fh "  },\n";
 
+#close file handle
+close $fh;
+
 ################
 #wordwheelquery#
 ################
@@ -231,6 +234,7 @@ foreach ( @array ){
 	}
 }
 
+#reset counter
 #empty temp array
 #split all elements using whitespace
 #replace the current element with just the query
@@ -292,9 +296,113 @@ if( $arraysize == 0 ){
 
 #print closing brackets & braces
 print $fh "   ]\n";
+print $fh "  },\n";
+
+#close file handle
+close $fh;
+
+########
+#runmru#
+########
+
+#call rip.pl, use the "runmru" plugin, and put the output in a temporary file
+system( qq{ perl rip.pl -r ./EVIDENCE/NTUSER.DAT -p runmru > "./TMP/output.tmp" });
+
+#open the output file or die
+open( $fh, "<", "./TMP/output.tmp" )
+	or die "Fatal Error - Cannot open output.tmp.\n";
+
+#read the contents of the file into an array
+@array = ();
+while( <$fh> ){
+	chomp;
+	push @array, $_;
+}
+
+#close the file handle
+close $fh;
+
+#array to hold output
+my @runmru;
+
+#sort data
+foreach ( @array ){
+	#if the line is a key, push it into the main data array
+	if ( $_ =~ m/^[a-z]\s/ ){
+		push @runmru, $_;
+	}
+}
+
+#reset counter
+#empty temp array
+#split all elements using whitespace
+#replace the current element with just the query
+#remove trailing "\1" at the end of each element
+#number all elements
+#increment counter
+$counter = 1;
+foreach( @runmru ){
+	@temp = ();
+	@temp = split( / /, $_ );
+	$_ = pop( @temp );
+	$_ = substr( $_, 0, -2 );
+	$_ = "$counter $_";
+	$counter++;
+}
+
+#open file handle in order to make output json
+open( $fh, ">>", "./RESULTS/data.json" )
+	or die "Fatal Error - Cannot open output json.\n";
+
+print $fh "  {\n";
+print $fh "   \"name\": \"RunMRU\",\n";
+print $fh "   \"children\": [\n";
+
+#get size of runmru array
+$arraysize = scalar( @runmru );
+
+#print "no data" child
+if( $arraysize == 0 ){
+	print $fh "     {\"name\": \"No RunMRU Data.\", \"size\": 5000}\n";
+	
+#print the only element
+} elsif ( $arraysize == 1 ){
+	#print the last element
+	my $lastelement = pop @runmru;
+	print $fh "    {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	
+#print element 0 & 1
+} elsif ( $arraysize == 2 ){
+	$arraysize = 1;
+
+	#print all but the last element
+	foreach my $x ( 0..$arraysize ){
+		print $fh "    {\"name\": \"$runmru[ $x ]\", \"size\": 5000},\n";
+	}
+	
+#all other array sizes (2+)
+} else {
+	#subtract one to account for index 0, another to omit the last element
+	$arraysize = $arraysize - 2;
+
+	#print all but the last element
+	foreach my $x ( 0..$arraysize ){
+		print $fh "    {\"name\": \"$runmru[ $x ]\", \"size\": 5000},\n";
+	}
+
+	#print the last element
+	my $lastelement = pop @runmru;
+	print $fh "    {\"name\": \"$lastelement\", \"size\": 5000}\n";
+}
+
+#print END B&B
+print $fh "   ]\n";
 print $fh "  }\n";
 print $fh " ]\n";
 print $fh "}\n";
+
+#close file handle
+close $fh;
 
 ##################
 #officedocs2010pp#
