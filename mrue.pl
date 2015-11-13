@@ -205,7 +205,7 @@ my $arraysize = scalar( @adoberdr );
 
 #just print nothing
 if( $arraysize == 0 ){
-	print $fh "     {}\n";
+	print $fh "     {\"name\": \"No Adobe Reader Data.\", \"size\": 5000}\n";
 	
 #print the only element
 } elsif ( $arraysize == 1 ){
@@ -313,9 +313,9 @@ sub office2010pp
 	#get size of word array
 	my $arraysize = scalar( @word);
 
-	#just print nothing
+	#print "no data" child
 	if( $arraysize == 0 ){
-		print $fh "       {}\n";
+		print $fh "       {\"name\": \"No Word Data.\", \"size\": 5000}\n";
 
 	#print the only element	
 	} elsif ( $arraysize == 1 ){
@@ -359,9 +359,9 @@ sub office2010pp
 	#get size of word array
 	$arraysize = scalar( @excel);
 
-	#just print nothing
+	#print "no data" child
 	if( $arraysize == 0 ){
-		print $fh "       {}\n";
+		print $fh "       {\"name\": \"No Excel Data.\", \"size\": 5000}\n";
 	
 	#print the only element
 	} elsif ( $arraysize == 1 ){
@@ -405,9 +405,9 @@ sub office2010pp
 	#get size of word array
 	$arraysize = scalar( @access);
 
-	#just print nothing
+	#print "no data" child
 	if( $arraysize == 0 ){
-		print $fh "       {}\n";
+		print $fh "       {\"name\": \"No Access Data.\", \"size\": 5000}\n";
 	
 	#print the only element
 	} elsif ( $arraysize == 1 ){
@@ -451,9 +451,9 @@ sub office2010pp
 	#get size of word array
 	$arraysize = scalar( @powerpoint);
 
-	#just print nothing
+	#print "no data" child
 	if( $arraysize == 0 ){
-		print $fh "       {}\n";
+		print $fh "       {\"name\": \"No PowerPoint Data.\", \"size\": 5000}\n";
 	
 	#print the only element
 	} elsif ( $arraysize == 1 ){
