@@ -395,11 +395,9 @@ if( $arraysize == 0 ){
 	print $fh "    {\"name\": \"$lastelement\", \"size\": 5000}\n";
 }
 
-#print END B&B
+#print closing brackets & braces
 print $fh "   ]\n";
-print $fh "  }\n";
-print $fh " ]\n";
-print $fh "}\n";
+print $fh "  },\n";
 
 #close file handle
 close $fh;
@@ -449,24 +447,178 @@ foreach ( @array ){
 
 #reset counter
 #empty temp array
-#split all elements using whitespace
+#split all elements based on regex
 #replace the current element with just the query
-#remove trailing "\1" at the end of each element
 #number all elements
 #increment counter
 $counter = 1;
 foreach( @recentdocs ){
 	@temp = ();
-	@temp = split( / /, $_ );
+	@temp = split( /^\s\s[0-9]*[0-9]*[0-9]\s[=]\s/, $_ );
 	$_ = pop( @temp );
-	$_ = substr( $_, 0, -2 );
 	$_ = "$counter $_";
 	$counter++;
 }
 
-foreach( @recentdocs ){
-	print "$_\n";
+#open file handle in order to make output json
+open( $fh, ">>", "./RESULTS/data.json" )
+	or die "Fatal Error - Cannot open output json.\n";
+
+print $fh "  {\n";
+print $fh "   \"name\": \"Recent Docs\",\n";
+print $fh "   \"children\": [\n";
+
+#get size of runmru array
+$arraysize = scalar( @recentdocs );
+
+#print "no data" child
+if( $arraysize == 0 ){
+	print $fh "     {\"name\": \"No Recent Docs Data.\", \"size\": 5000}\n";
+	
+#print the only element
+} elsif ( $arraysize == 1 ){
+	#print the last element
+	my $lastelement = pop @recentdocs;
+	print $fh "    {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	
+#print element 0 & 1
+} elsif ( $arraysize == 2 ){
+	$arraysize = 1;
+
+	#print all but the last element
+	foreach my $x ( 0..$arraysize ){
+		print $fh "    {\"name\": \"$recentdocs[ $x ]\", \"size\": 5000},\n";
+	}
+	
+#all other array sizes (2+)
+} else {
+	#subtract one to account for index 0, another to omit the last element
+	$arraysize = $arraysize - 2;
+
+	#print all but the last element
+	foreach my $x ( 0..$arraysize ){
+		print $fh "    {\"name\": \"$recentdocs[ $x ]\", \"size\": 5000},\n";
+	}
+
+	#print the last element
+	my $lastelement = pop @recentdocs;
+	print $fh "    {\"name\": \"$lastelement\", \"size\": 5000}\n";
 }
+
+#print closing brackets & braces
+print $fh "   ]\n";
+print $fh "  },\n";
+
+#close file handle
+close $fh;
+
+#####
+#mmc#
+#####
+
+#call rip.pl, use the "mmc" plugin, and put the output in a temporary file
+system( qq{ perl rip.pl -r ./EVIDENCE/NTUSER.DAT -p mmc > "./TMP/output.tmp" });
+
+#open the output file or die
+open( $fh, "<", "./TMP/output.tmp" )
+	or die "Fatal Error - Cannot open output.tmp.\n";
+
+#read the contents of the file into an array
+@array = ();
+while( <$fh> ){
+	chomp;
+	push @array, $_;
+}
+
+#close the file handle
+close $fh;
+
+#array to hold output
+my @mmc;
+
+#reset section keeper
+$section = 0;
+
+#sort data
+foreach ( @array ){
+	#if the line is a key, push it into the main data array
+	if ( $_ =~ m/^\s\sFile[0-9]*[0-9]*[0-9]\s[-][>]/ ){
+		push @mmc, $_;
+	}
+}
+
+#reset counter
+#empty temp array
+#split all elements based on regex
+#replace the current element with just the query
+#replace all "\" with "/"
+#grab the filename from the full path and throw away everything else
+#number all elements
+#increment counter
+$counter = 1;
+foreach( @mmc ){
+	@temp = ();
+	@temp = split( /^\s\sFile[0-9]*[0-9]*[0-9]\s[-][>]\s/, $_ );
+	$_ = pop( @temp );
+	$_ =~ s/\\/\//g;
+	$_ = fileparse( $_ );
+	$_ = "$counter $_";
+	$counter++;
+}
+
+#open file handle in order to make output json
+open( $fh, ">>", "./RESULTS/data.json" )
+	or die "Fatal Error - Cannot open output json.\n";
+
+print $fh "  {\n";
+print $fh "   \"name\": \"MMC\",\n";
+print $fh "   \"children\": [\n";
+
+#get size of runmru array
+$arraysize = scalar( @mmc );
+
+#print "no data" child
+if( $arraysize == 0 ){
+	print $fh "     {\"name\": \"No MMC Data.\", \"size\": 5000}\n";
+	
+#print the only element
+} elsif ( $arraysize == 1 ){
+	#print the last element
+	my $lastelement = pop @mmc;
+	print $fh "    {\"name\": \"$lastelement\", \"size\": 5000}\n";
+	
+#print element 0 & 1
+} elsif ( $arraysize == 2 ){
+	$arraysize = 1;
+
+	#print all but the last element
+	foreach my $x ( 0..$arraysize ){
+		print $fh "    {\"name\": \"$mmc[ $x ]\", \"size\": 5000},\n";
+	}
+	
+#all other array sizes (2+)
+} else {
+	#subtract one to account for index 0, another to omit the last element
+	$arraysize = $arraysize - 2;
+
+	#print all but the last element
+	foreach my $x ( 0..$arraysize ){
+		print $fh "    {\"name\": \"$mmc[ $x ]\", \"size\": 5000},\n";
+	}
+
+	#print the last element
+	my $lastelement = pop @mmc;
+	print $fh "    {\"name\": \"$lastelement\", \"size\": 5000}\n";
+}
+
+#print END B&B
+print $fh "   ]\n";
+print $fh "  }\n";
+print $fh " ]\n";
+print $fh "}\n";
+
+#close file handle
+close $fh;
 
 ##################
 #officedocs2010pp#
