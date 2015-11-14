@@ -43,7 +43,7 @@ my $VERSION = getVersion();
 sub pluginmain {
 	my $class = shift;
 	my $ntuser = shift;
-	#::logMsg("Launching adoberdr v.".$VERSION);
+	::logMsg("Launching adoberdr v.".$VERSION);
 	::rptMsg("adoberdr v.".$VERSION); # banner
   ::rptMsg("(".$config{hive}.") ".getShortDescr()."\n"); # banner
 	my $reg = Parse::Win32Registry->new($ntuser);
