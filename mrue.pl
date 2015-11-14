@@ -243,7 +243,7 @@ foreach ( @array ){
 $counter = 1;
 foreach( @wwq ){
 	@temp = ();
-	@temp = split( / /, $_ );
+	@temp = split( /\s+\s*\s/, $_ );
 	$_ = pop( @temp );
 	$_ = "$counter $_";
 	$counter++;
@@ -343,7 +343,7 @@ foreach ( @array ){
 $counter = 1;
 foreach( @runmru ){
 	@temp = ();
-	@temp = split( / /, $_ );
+	@temp = split( /  /, $_ );
 	$_ = pop( @temp );
 	$_ = substr( $_, 0, -2 );
 	$_ = "$counter $_";
@@ -403,6 +403,70 @@ print $fh "}\n";
 
 #close file handle
 close $fh;
+
+############
+#recentdocs#
+############
+
+#call rip.pl, use the "recentdocs" plugin, and put the output in a temporary file
+system( qq{ perl rip.pl -r ./EVIDENCE/NTUSER.DAT -p recentdocs > "./TMP/output.tmp" });
+
+#open the output file or die
+open( $fh, "<", "./TMP/output.tmp" )
+	or die "Fatal Error - Cannot open output.tmp.\n";
+
+#read the contents of the file into an array
+@array = ();
+while( <$fh> ){
+	chomp;
+	push @array, $_;
+}
+
+#close the file handle
+close $fh;
+
+#array to hold output
+my @recentdocs;
+
+#reset section keeper
+$section = 0;
+
+#sort data
+foreach ( @array ){
+	#if the line is the beginning of a new section, increment $section
+	if ( $_ =~ m/^Software./ ){
+		$section++;
+
+	#else add value to corrseponding array based on $section
+	} else {
+		if ( $section == 1 ){
+			if ( $_ =~ m/^  [0-9]*[0-9]*[0-9]\s[=]{1}./ ){
+				push @recentdocs, $_;
+			}
+		}
+	}
+}
+
+#reset counter
+#empty temp array
+#split all elements using whitespace
+#replace the current element with just the query
+#remove trailing "\1" at the end of each element
+#number all elements
+#increment counter
+$counter = 1;
+foreach( @recentdocs ){
+	@temp = ();
+	@temp = split( / /, $_ );
+	$_ = pop( @temp );
+	$_ = substr( $_, 0, -2 );
+	$_ = "$counter $_";
+	$counter++;
+}
+
+foreach( @recentdocs ){
+	print "$_\n";
+}
 
 ##################
 #officedocs2010pp#
