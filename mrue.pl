@@ -10,7 +10,7 @@ print "████╗ ████║██╔══██╗██║   ██
 print "██╔████╔██║██████╔╝██║   ██║█████╗  \n";
 print "██║╚██╔╝██║██╔══██╗██║   ██║██╔══╝  \n";
 print "██║ ╚═╝ ██║██║  ██║╚██████╔╝███████╗\n";
-print "╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝ v1.0\n\n";
+print "╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝ v1.5\n\n";
 
 #expanded acronym
 print "Most\n";
@@ -26,7 +26,7 @@ print "Windows and other applications; it will then take all results\n";
 print "and visualize them using D3.js for easier consumption.\n\n";
 
 #prerequisites
-print "Please be sure to have your registry files in the EVIDENCE folder!\n\n";
+print "Please be sure to have NTUSER.DAT in the EVIDENCE folder!\n\n";
 
 #wait for user to read intro and continue
 print "Press any key to continue...\n\n";
@@ -94,6 +94,90 @@ foreach ( @array ){
 	}
 }
 
+#open the export file or die
+open( $fh, ">", "./RESULTS/DATA/WORD.txt" )
+	or die "Fatal Error - Cannot open WORD.txt.\n";
+
+#export sorted word data
+#if array is size 0, export no data
+if( scalar( @word ) == 0 ){
+	print $fh "No Word data found.";
+
+#else export all data
+} else{
+	foreach( @word ){
+		my $temp = $_;
+		$temp = substr( $_, 2 );
+		print $fh "$temp\n";
+	}
+}
+
+#close file handle
+close $fh;
+
+#open the export file or die
+open( $fh, ">", "./RESULTS/DATA/EXCEL.txt" )
+	or die "Fatal Error - Cannot open EXCEL.txt.\n";
+
+#export sorted excel data
+#if array is size 0, export no data
+if( scalar( @excel ) == 0 ){
+	print $fh "No Excel data found.";
+
+#else export all data
+} else{
+	foreach( @excel ){
+		my $temp = $_;
+		$temp = substr( $_, 2 );
+		print $fh "$temp\n";
+	}
+}
+
+#close file handle
+close $fh;
+
+#open the export file or die
+open( $fh, ">", "./RESULTS/DATA/ACCESS.txt" )
+	or die "Fatal Error - Cannot open ACCESS.txt.\n";
+
+#export sorted access data
+#if array is size 0, export no data
+if( scalar( @access ) == 0 ){
+	print $fh "No Access data found.";
+
+#else export all data
+} else{
+	foreach( @access ){
+		my $temp = $_;
+		$temp = substr( $_, 2 );
+		print $fh "$temp\n";
+	}
+}
+
+#close file handle
+close $fh;
+
+#open the export file or die
+open( $fh, ">", "./RESULTS/DATA/POWERPOINT.txt" )
+	or die "Fatal Error - Cannot open POWERPOINT.txt.\n";
+
+#export sorted powerpoint data
+#if array is size 0, export no data
+if( scalar( @powerpoint ) == 0 ){
+	print $fh "No PowerPoint data found.";
+
+#else export all data
+} else{
+	foreach( @powerpoint ){
+		my $temp = $_;
+		$temp = substr( $_, 2 );
+		print $fh "$temp\n";
+	}
+}
+
+#close file handle
+close $fh;
+
 #call office2010pp sub
 &office2010pp;
 
@@ -129,8 +213,43 @@ foreach ( @array ){
 	}
 }
 
-#pull out just the path
+#open the export file or die
+open( $fh, ">", "./RESULTS/DATA/ADOBE READER.txt" )
+	or die "Fatal Error - Cannot open ADOBE READER.txt.\n";
+
+#print header
+print $fh "File name\n";
+print $fh "sDate\n";
+print $fh "uFileSize\n";
+print $fh "uPageCount\n\n";
+
+#export sorted adobe reader data
+#if array is size 0, export no data
 my @temp;
+if( scalar( @adoberdr ) == 0 ){
+	print $fh "No Adobe Reader data found.";
+
+#else export all data
+} else{
+	foreach( @adoberdr ){
+		@temp = split( ',', $_ );
+		#remove "/" from the beginning of line and "\00" from end of line
+		$temp[ 1 ] = substr( $temp[ 1 ], 1, -1 );
+		print $fh "$temp[ 1 ]\n";
+		#remove "/" from the beginning of line and "\00" from end of line
+		$temp[ 2 ] = substr( $temp[ 2 ], 1, -1 );
+		print $fh "$temp[ 2 ]\n";
+		#remove "/" from the beginning of line and "\00" from end of line
+		$temp[ 3 ] = substr( $temp[ 3 ], 1, -1 );
+		print $fh "$temp[ 3 ]\n";
+		#remove "/" from the beginning of line and "\00" from end of line
+		$temp[ 4 ] = substr( $temp[ 4 ], 1 );
+		print $fh "$temp[ 4 ]\n\n";
+	}
+}
+
+#close file handle
+close $fh;
 
 #split each element into its three parts
 #replace the current element with just the full path
@@ -141,7 +260,8 @@ my @temp;
 #increment counter
 my $counter = 1;
 foreach( @adoberdr ){
-	my @temp = split( ',', $_ );
+	@temp = ();
+	@temp = split( ',', $_ );
 	$_ = $temp[ 1 ];
 	$_ = substr( $_, 1, -1 );
 	$_ =~ s/\\/\//g;
@@ -249,6 +369,26 @@ foreach( @wwq ){
 	$counter++;
 }
 
+#open the export file or die
+open( $fh, ">", "./RESULTS/DATA/WORDWHEELQUERY.txt" )
+	or die "Fatal Error - Cannot open WORDWHEELQUERY.txt.\n";
+
+#export sorted wordwheelquery data
+#if array is size 0, export no data
+if( scalar( @wwq ) == 0 ){
+	print $fh "No WordWheelQuery data found.";
+
+#else export all data
+} else{
+	foreach( @wwq ){
+		my $temp = $_;
+		print $fh "$temp\n";
+	}
+}
+
+#close file handle
+close $fh;
+
 #open file handle in order to make output json
 open( $fh, ">>", "./RESULTS/data.json" )
 	or die "Fatal Error - Cannot open output json.\n";
@@ -349,6 +489,26 @@ foreach( @runmru ){
 	$_ = "$counter $_";
 	$counter++;
 }
+
+#open the export file or die
+open( $fh, ">", "./RESULTS/DATA/RUNMRU.txt" )
+	or die "Fatal Error - Cannot open RUNMRU.txt.\n";
+
+#export sorted runmru data
+#if array is size 0, export no data
+if( scalar( @runmru ) == 0 ){
+	print $fh "No RunMRU data found.";
+
+#else export all data
+} else{
+	foreach( @runmru ){
+		my $temp = $_;
+		print $fh "$temp\n";
+	}
+}
+
+#close file handle
+close $fh;
 
 #open file handle in order to make output json
 open( $fh, ">>", "./RESULTS/data.json" )
@@ -460,6 +620,26 @@ foreach( @recentdocs ){
 	$counter++;
 }
 
+#open the export file or die
+open( $fh, ">", "./RESULTS/DATA/RECENTDOCS.txt" )
+	or die "Fatal Error - Cannot open RECENTDOCS.txt.\n";
+
+#export sorted recentdocs data
+#if array is size 0, export no data
+if( scalar( @recentdocs ) == 0 ){
+	print $fh "No RecentDocs data found.";
+
+#else export all data
+} else{
+	foreach( @recentdocs ){
+		my $temp = $_;
+		print $fh "$temp\n";
+	}
+}
+
+#close file handle
+close $fh;
+
 #open file handle in order to make output json
 open( $fh, ">>", "./RESULTS/data.json" )
 	or die "Fatal Error - Cannot open output json.\n";
@@ -468,7 +648,7 @@ print $fh "  {\n";
 print $fh "   \"name\": \"Recent Docs\",\n";
 print $fh "   \"children\": [\n";
 
-#get size of runmru array
+#get size of recentdocs array
 $arraysize = scalar( @recentdocs );
 
 #print "no data" child
@@ -547,6 +727,27 @@ foreach ( @array ){
 	}
 }
 
+#open the export file or die
+open( $fh, ">", "./RESULTS/DATA/MMC.txt" )
+	or die "Fatal Error - Cannot open MMC.txt.\n";
+
+#export sorted mmc data
+#if array is size 0, export no data
+if( scalar( @mmc ) == 0 ){
+	print $fh "No MMC data found.";
+
+#else export all data
+} else{
+	foreach( @mmc ){
+		my $temp = $_;
+		$temp = substr( $temp, 2 );
+		print $fh "$temp\n";
+	}
+}
+
+#close file handle
+close $fh;
+
 #reset counter
 #empty temp array
 #split all elements based on regex
@@ -574,7 +775,7 @@ print $fh "  {\n";
 print $fh "   \"name\": \"MMC\",\n";
 print $fh "   \"children\": [\n";
 
-#get size of runmru array
+#get size of mmc array
 $arraysize = scalar( @mmc );
 
 #print "no data" child
@@ -619,6 +820,10 @@ print $fh "}\n";
 
 #close file handle
 close $fh;
+
+#notify user that everything's all set and done
+print "\nAll Done! - Go to the RESULTS folder and open RESULTS.html in your browser.\n";
+print "Full paths & times can be found in the DATA folder.\n";
 
 ##################
 #officedocs2010pp#
