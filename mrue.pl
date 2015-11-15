@@ -823,7 +823,7 @@ close $fh;
 
 #notify user that everything's all set and done
 print "\nAll Done! - Go to the RESULTS folder and open RESULTS.html in your browser.\n";
-print "Full paths & times can be found in the DATA folder.\n";
+print "Full details can be found in the DATA folder.\n";
 
 ##################
 #officedocs2010pp#
