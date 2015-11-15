@@ -21,5 +21,5 @@ License:
 	GPLv2
 
 Authors:
-	Shinji Kikuchi
-	Ross Swerling
+	Shinji Kikuchi (stk4702@rit.edu)
+	Ross Swerling (rxs7360@rit.edu)
