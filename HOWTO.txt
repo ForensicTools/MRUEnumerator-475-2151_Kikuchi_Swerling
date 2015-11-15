@@ -7,7 +7,7 @@ This tool is designed to parse a Windows 7 registry hive; it has not been design
 
 ##SETUP##
 
-The following steps will give RR the ability to run on Liunx.
+The following steps will give RR the ability to run on Linux.
 
 ##Download the repo
 https://github.com/ross-swerling/MRUEnumerator-475-2151_Kikuchi_Swerling -> Download ZIP
