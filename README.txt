@@ -14,7 +14,7 @@ and visualize them using D3.js for easier consumption.
 Prerequisites:
 	Perl
 	Web browser
-	Windows registry files
+	Windows registry file (NTUSER.DAT)
 	D3.min.js library (included)
 	
 License:
