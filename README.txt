@@ -14,12 +14,12 @@ and visualize them using D3.js for easier consumption.
 Prerequisites:
 	Perl
 	Web browser
-	D3.js library (included)
-	Windows target image mounted
+	Windows registry file (NTUSER.DAT)
+	D3.min.js library (included)
 	
 License:
 	GPLv2
 
 Authors:
-	Shinji Kikuchi
-	Ross Swerling
+	Shinji Kikuchi (stk4702@rit.edu)
+	Ross Swerling (rxs7360@rit.edu)
