@@ -1,105 +1,119 @@
+##########
 ##HOW TO##
+##########
 
-How to use MRUE:
+How to use MRUE on Linux:
 
+########
 ##NOTE##
+########
 This tool is designed to parse a Windows 7 registry hive; it has not been designed to parse other versions.
 
+#########
 ##SETUP##
+#########
+The following steps will give RR and MRUE the ability to run on Linux.
 
-The following steps will give RR the ability to run on Linux.
-
-##Download the repo
+##Download the repo##
 https://github.com/ross-swerling/MRUEnumerator-475-2151_Kikuchi_Swerling -> Download ZIP
 
-##Move the zip to desired directory
+##Move the zip to desired directory##
 Everything is contained within the main folder so it can be placed anywhere.
 
-##Unzip the folder
+##Unzip the folder##
 unzip MRUEnumerator-475-2151_Kikuchi_Swerling-master.zip
 
-##Move to the newly unzipped folder
+##Move to the newly unzipped folder##
 cd MRUEnumerator-475-2151_Kikuchi_Swerling-master
 
-##Install the Parse::Win32Registry Perl module
+##Install the Parse::Win32Registry Perl module##
 perl -MCPAN -e 'install Parse::Win32Registry'
 
-##Convert to Unix line endings
+##Convert to Unix line endings##
 perl -pi -e 's/\r\n/\n/g' rip.pl
 
-##Make the rip.pl script executable
+##Make the rip.pl script executable##
 chmod +x rip.pl
 
-##Set your system Perl interpreter to run rip.pl
+##Set your system Perl interpreter to run rip.pl##
 which perl | sed 's/\//\\\//g' > /tmp/perlloc && sed -i "s/ c:\\\\perl\\\\bin\\\\perl.exe/`cat /tmp/perlloc`/" rip.pl
 
-##Allow the RR pulgins directory to be found
+##Allow the RR pulgins directory to be found##
 echo $PWD | sed 's/\//\\\//g' > /tmp/pwd && sed -i "s/use Getopt::Long;/use Getopt::Long;\nuse lib \'`cat /tmp/pwd`\/\';\n/" rip.pl
+
 sed -i "s/plugindir = \"plugins\\\\\\\\/plugindir = \"`cat /tmp/pwd`\/plugins\//" rip.pl
+
 sed -i 's/require "plugins\\\\".$plugins{$i}."\\.pl";/require "plugins\/".$plugins{$i}."\\.pl";/' rip.pl
 
-##Test RR to make sure it runs
+##Test RR to make sure it runs##
 ./rip.pl
+
+##Make the mrue.pl script executable##
+chmod +x mrue.pl
 
 Special thanks to Stephen Bradshaw:
 http://www.thegreycorner.com/2010/04/running-regripper-on-linux.html
 
+#################
 ##REPO CONTENTS##
+#################
 
-##CHANGELOG.txt
+##CHANGELOG.txt##
 Version history. A more detailed log can be viewed on Github.
 
-##EVIDENCE
+##EVIDENCE##
 The EVIDENCE folder is where NTUSER.DAT needs to be placed. This tool is designed to only use NTUSER.DAT as it contains the
 user-specific MRU lists.
 
-##LICENSE.txt
+##LICENSE.txt##
 GPLv2
 
-##mrue.pl
+##mrue.pl##
 The main script; call it to start the tool.
 
-##plugins
+##plugins##
 The plugins folder contains the scripts that RR uses to parse the registry. No user interaction needed.
 
-##README.txt
+##README.txt##
 Small blurb about MRUE as seen on the repo.
 
-##RESULTS
+##RESULTS##
 Results will be exported here; open RESULTS.html to view the visualization and open DATA to view the detailed files.
 
-##rip.pl
+##rip.pl##
 Main RR script.
 
-##TMP
+##TMP##
 This serves as a temporary store for RR output; no user interaction needed.
 
-##RESULTS/d3.min.js
+##RESULTS/d3.min.js##
 D3.js library used to create visualizations.
 
-##RESULTS/D3 LICENSE.txt
-License written by Michael Bostock.
+##RESULTS/D3 LICENSE.txt##
+License provided by Michael Bostock.
 
-##RESULTS/DATA
+##RESULTS/DATA##
 Contains text files with more detail on each MRU list.
 
-##RESULTS/example.json
+##RESULTS/example.json##
 Example json file used by index.html.
 
-##RESULTS/index.html
+##RESULTS/index.html##
 Example visualization; open in your preferred web browser.
 
-##RESULTS/RESULTS.html
+##RESULTS/RESULTS.html##
 MRUE results; open in your preferred web browser.
 
+##############
 ##HOW TO USE##
+##############
 
-##Place evidence
+##Place evidence##
 Place NTUSER.DAT in the EVIDENCE folder. (Typically located at C:\Users\<Username>\NTUSER.DAT)
 
-##Run
-"./mrue.pl" OR "perl mrue.pl"
+##Run##
+./mrue.pl OR perl mrue.pl
 
-##View results
+##View results##
 Open RESULTS.html (in the RESULTS folder) in your preferred browser. Full details can be found in the DATA folder within
 RESULTS.

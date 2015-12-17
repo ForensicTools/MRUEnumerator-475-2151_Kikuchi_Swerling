@@ -28,12 +28,26 @@ print "and visualize them using D3.js for easier consumption.\n\n";
 #prerequisites
 print "Please be sure to have NTUSER.DAT in the EVIDENCE folder!\n\n";
 
-#wait for user to read intro and continue
-print "Press any key to continue...\n\n";
-<STDIN>;
+#wait for user to read intro and options
+print "Enter 1 for Linux / 2 for Windows!\n\n";
 
-#clear the terminal
-system( "clear" );
+#declare variable and collect input
+my $winlin = "";
+chomp( $winlin = <> );
+
+#clear terminal using Linux command
+if( $winlin eq 1 ){
+	system( "clear" );
+	
+#clear terminal using Windows command
+} elsif ( $winlin eq 2 ){
+	system( "cls" );
+	
+#quit if invalid input received
+} else {
+	print "Invalid input received. Please try again.\n";
+	exit;
+}
 
 ################
 #officedocs2010#
