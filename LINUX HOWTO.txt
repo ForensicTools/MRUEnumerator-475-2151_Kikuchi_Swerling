@@ -12,7 +12,7 @@ This tool is designed to parse a Windows 7 registry hive; it has not been design
 #########
 ##SETUP##
 #########
-The following steps will give RR the ability to run on Linux.
+The following steps will give RR and MRUE the ability to run on Linux.
 
 ##Download the repo##
 https://github.com/ross-swerling/MRUEnumerator-475-2151_Kikuchi_Swerling -> Download ZIP
@@ -47,6 +47,9 @@ sed -i 's/require "plugins\\\\".$plugins{$i}."\\.pl";/require "plugins\/".$plugi
 
 ##Test RR to make sure it runs##
 ./rip.pl
+
+##Make the mrue.pl script executable##
+chmod +x mrue.pl
 
 Special thanks to Stephen Bradshaw:
 http://www.thegreycorner.com/2010/04/running-regripper-on-linux.html
